@@ -1,0 +1,30 @@
+require 'secret_diary'
+
+RSpec.describe SecretDiary do
+    context "Initialize and read" do
+        it "Fail - Adds diary to container but it's locked" do
+            diary = double(:Diary, read: "Entry")
+            secret_diary = SecretDiary.new(diary)
+            expect{secret_diary.read}.to raise_error "Go away!"
+        end
+    end
+
+    context "Initialize, unlock and read" do
+        it "returns the contents of the diary" do
+            diary = double(:Diary, read: "Entry")
+            secret_diary = SecretDiary.new(diary)
+            secret_diary.unlock
+            expect(secret_diary.read).to eq "Entry"
+        end
+    end
+
+    context "Unlock,lock then read" do
+        it "Fails - locked again" do
+            diary = double(:Diary, read: "Entry")
+            secret_diary = SecretDiary.new(diary)
+            secret_diary.unlock
+            secret_diary.lock
+            expect{secret_diary.read}.to raise_error "Go away!"
+        end
+    end
+end
